@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project working principle</title>
+       <link rel="stylesheet" href="style.css">    
+  <style>
+    body {
+      background-color: lightgray; 
+      font-family: Arial, sans-serif;
+    }
+  </style>
+</head>
+<body>
+   
+   
+     
+<section>
+          <h4 style="margin-top:12px">WORKING PRINCIPLE :</h4>
+          </section>
+<div class="bg-white rounded-lg shadow-md p-6">
+          <ol class="bg-blue-300">
+            1.Standby / idle: <br>
+The ESP32-CAM stays powered and runs a loop waiting for a vehicle event. Wi-Fi/MQTT and SD card are initialized; sensors are warmed if needed.
+<br>
+2.Vehicle detection (piezo): <br>
+The piezo sensor (or push button in simulation) produces an analog spike when a wheel passes. The ESP32 reads the piezo ADC and compares it to a calibrated threshold to decide “vehicle present.”
+<br>
+3.Stabilize & prepare: <br>
+On detection the controller briefly waits a few milliseconds for the signal to stabilize, moves any actuators (if used), and prepares sensor sampling so readings are taken at the correct instant relative to the exhaust plumes.
+<br>
+4.sensors: <br>
+The ESP32 reads the gas sensor ADCs (MQ-7 for CO, MQ-135 for NOx/VOCs) .  
+<br>
+5.Capture image (ESP32-CAM): <br>
+At the same trigger the ESP32-CAM takes a photo of the vehicle plate (and stores it to the onboard SD or memory). Optionally apply a small delay if plate capture needs exact timing.
+<br>
+6.ANPR(plate extraction): <br>
+Either:
+
+ Edge mode — run a lightweight ANPR routine on the device (or basic image preprocessing + OCR) to extract plate text, or
+
+Server mode — upload the image (or image URL) to a server that runs OpenALPR/EasyOCR and returns the plate text. Use the method your hardware can support.
+<br>
+7.Assemble record: <br>
+The ESP32 combines: site ID, UTC timestamp, plate text (or null if not read), averaged gas and PM2.5 values, and any flags (e.g., which thresholds were exceeded). Format as JSON (or CSV) for storage/transmission.
+<br>
+8.Local logging: <br>
+Append the full record to the SD card . This provides an offline backup in case the network is unavailable.
+<br>
+9.IoT upload: <br>
+If Wi-Fi is available, publish the JSON to your Adafruit IO MQTT feed (or REST endpoint). Include minimal fields the cloud needs (you may send images only on low-confidence reads to save bandwidth).
+<br>
+10.Debounce / cooldown: <br>
+After handling a detection, wait a configured cooldown  to avoid duplicate triggers from the same vehicle, then return to the idle loop.
+<br>
+11.Post-processing & analytics (server): <br>
+On the server, store incoming records in a database, run analytics or ML to detect repeat offenders or trends, and (for multi-site deployments) match plate strings across sites using timestamp windows and fuzzy matching.
+          </ol>
+
+         
+        </div>
+      </section>
+       
+</body>
+</html>
