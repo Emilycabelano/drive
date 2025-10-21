@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CLEANDRIVE PDA PROJECT</title>
+</head>
+<body style="margin:0; font-family:Arial, sans-serif; background-color:#889fa8; color:#a2a1d8;">
+
+    <div style="height:60%; text-align:center; padding:40px 20px; background-image:url('urban-highway.jpg'); background-size:cover; background-repeat:no-repeat; background-position:center; position:relative;">
+        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);"></div>
+        <div style="position:relative; z-index:1;">
+            <h1 style="color:aliceblue; line-height:1.4;">VEHICLE EMISSION MONITORING INTEGRATED WITH IOT <br>(Clean drive RPDA)</h1>
+            
+        </div>
+    </div>
+
+      <div style="height:60%; text-align:center; padding:40px 20;" >
+            <h1  style="color:aliceblue; line-height:1.4;"><u>PROJECT OWNERS</u></h1>
+           </h2>
+            </div> 
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; padding:20px; max-width:900px; margin:20px auto;">
+      
+      <div style="background-color:#272525; border-radius:10px; padding:10px; text-align:center;">
+              
+          <h2>Emmelyne .I.Gihozo</h2>
+            <img src="emmy.jpg" alt="" style="width:200px; border-radius:10%; margin-top:10px;">
+             <h2> <a href="Emily portfolio.html" style="display:inline-block; padding:10px 20px; background-color:gray; color:#fff; border-radius:10px; text-decoration:none; margin-top:10px;">more about</a>
+        </div>
+        <div style="background-color:#2e2a2a; border-radius:10px; padding:10px; text-align:center;">
+            <h2>John Niyonizeye</h2>
+            <img src="rap.png" alt="" style="width:200px; border-radius:10%; margin-top:10px;">
+             <h2> <a href="rape portif.html" style="display:inline-block; padding:10px 20px; background-color:gray; color:#fff; border-radius:10px; text-decoration:none; margin-top:10px;">more about </a>
+        </div>
+    </div>
+
+    <div style="border-radius:20px; background-color:#5c6268; padding:30px 20px; margin:20px auto; max-width:1000px;">
+        <h2 style="color:#83c5ff;"><u>PROJECT INTRODUCTION</u></h2>
+        <p style="color:aliceblue; margin:10px 0;">
+            <strong>Clean drive RPDA is a roadside emission monitoring system to detect and log vehicle exhaust pollutants in real time. The system uses gas sensors, vehicle detection sensors, a servo motor adjustable mechanism, and camera module to measure pollutants such as CO2, NOX, HC, and CO from passing vehicles. Data is recorded locally and transmitted to a server for analysis, enabling the identification of high emission vehicles and supporting environmental research or traffic pollution studies.</strong>
+        </p>
+        <h2 style="color:#83c5ff;"><u>IMPLEMENTATION:</u></h2>
+        <h3 style="color:aliceblue;">1.Working principle:</h3>
+        <p style="color:aliceblue;">
+            <strong>The working principle of this IoT-based roadside vehicle emission detection system is based on real-time monitoring and response. When a vehicle passes in front of the system, the IR sensor detects its presence and immediately triggers the ESP32-CAM microcontroller to activate the gas sensors (MQ-7 and MQ-135). These sensors measure harmful gases such as Carbon Monoxide (CO) and Nitrogen Oxides (NOx) emitted from the vehicle’s exhaust. The ESP32-CAM processes the sensor readings and, if the emission levels exceed the safe threshold, it activates the buzzer to signal excessive pollution. At the same time, the ESP32-CAM captures an image of the vehicle’s license plate and stores both the photo and sensor data onto the SD card for local record-keeping. The collected data, including timestamps and gas readings, are then sent wirelessly to the Adafruit IO cloud for remote monitoring, allowing authorities or researchers to analyze emission patterns and identify high-polluting vehicles.</strong>
+        </p>
+    </div>
+
+    <div style="border-radius:20px; background-color:#61666b; padding:20px; margin:20px auto; max-width:1000px;">
+        <h3 style="color:aliceblue;"> 2.Components:</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; padding:20px;">
+            <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1>INFRARED SENSOR</h1>
+                <p>An infrared (IR) sensor is an optoelectronic device that detects and measures infrared radiation, a form of electromagnetic energy with wavelengths longer than visible light</p>
+                <img src="INFRARED.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+            <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1>MQ-7</h1>
+                <p>The MQ-7 is a semiconductor gas sensor module designed to detect carbon monoxide (CO) in the air, measuring concentrations between 20 and 2000 ppm with high sensitivity and a fast response time.</p>
+                <img src="MQ7.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+            <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1>ESP32 CAM</h1>
+                <p>The ESP32-CAM is a compact, low-cost development board featuring an ESP32-S System-on-Chip and an integrated 2-megapixel OV2640 camera sensor, enabling wireless image and video streaming via Wi-Fi.</p>
+                <img src="ESP32 CAM.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+            <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1>BUZZER</h1>
+                <p>A buzzer is an audio signaling device that creates a buzzing or beeping sound when an electrical current is applied.</p>
+                <img src="BUZZER.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+            <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1>MQ135 SENSOR</h1>
+                <p>The MQ-135 is a gas sensor module used for air quality monitoring, capable of detecting a wide range of harmful gases including ammonia (NH3), nitrogen oxides (NOx), alcohol, benzene, smoke, and carbon dioxide (CO2)</p>
+                <img src="MQ135.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+                <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1> 5VDC POWER SUPPLY</h1>
+                <p>A 5V power supply is an electrical device that converts a higher AC voltage (like from a wall outlet) into a stable, regulated 5V DC output. </p>
+                <img src="5V power supply.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+                  <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1> SD CARD</h1>
+                <p>An SD card is a compact, removable flash memory card used for storing and transferring digital data. </p>
+                <img src="SD CARD.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+                  <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1> SOLDERING IRON</h1>
+                <p>A soldering iron is a hand-held tool with a heated metal tip used to melt solder, creating a permanent bond between metal workpieces. </p>
+                <img src="solder.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+   <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1> CONNECTING WIRE</h1>
+                <p>
+                  Connecting wires are used to create electrical connections between two points, often involving joining wires together using methods like wire nuts, screw terminals, or crimping </p>
+                <img src="WIRE.png" alt="" style="width:100%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+             </div>
+        </div>
+    </div>
+
+   <div style="border-radius:20px; background-color:#61666b; padding:20px; margin:20px auto; max-width:1000px;">
+  
+              
+        <h3 style="color:aliceblue;">3.Electronic design and diagrams:</h3>
+        <h2>ELECTRONIC DESIGNS IMAGES:</h2>
+        <p style="color:aliceblue;">Here’s a screenshot of circuit diagram and flow chart </p>
+        <img src="PROTEUS SIMULATION.png" alt="" style="max-width:40%; border-radius:10px;">
+    <img src="FLOW CHART.png"  alt="" style="max-width:30%; border-radius:10px;">
+            </div>
+      </div>
+
+    <div style="border-radius:20px; background-color:#61666b; padding:20px; margin:20px auto; max-width:1000px;">
+        <h3 style="color:aliceblue;">4.Code</h3>
+        <h2 style="color:aliceblue;">Here’s arduino code:</h2>
+        <pre style="background-color:#1e1e1e; color:#fff; overflow-x:auto; padding:15px; border-radius:10px;">
+#include &lt;WiFi.h&gt;
+#include &lt;Adafruit_MQTT.h&gt;
+#include &lt;Adafruit_MQTT_Client.h&gt;
+#include &lt;SPI.h&gt;
+#include &lt;SD.h&gt;
+#include &lt;ESP8266WiFi.h&gt;
+#include <WiFi.h>
+#include "Adafruit_MQTT.h"
+#include "Adafruit_MQTT_Client.h"
+
+#define WIFI_SSID "xxxxxxxx"
+#define WIFI_PASS "xxxxxxxx"
+#define AIO_SERVER "io.adafruit.com"
+#define AIO_SERVERPORT 1883
+#define AIO_USERNAME "xxxxxxxx"
+#define AIO_KEY "xxxxxxxx"
+
+int irSensorPin = 2;
+int coSensorPin = 34;
+int buzzer = 4;
+int coThreshold = 50;
+
+WiFiClient client;
+Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
+Adafruit_MQTT_Publish coFeed = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/Covalue");
+
+void setup() {
+  Serial.begin(115200);
+  pinMode(irSensorPin, INPUT);
+  pinMode(coSensorPin, INPUT);
+  pinMode(buzzer, OUTPUT);
+  digitalWrite(buzzer, LOW);
+  Serial.println(F("Connecting to WiFi..."));
+  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+  Serial.println("\nWiFi connected!");
+}
+
+void loop() {
+  MQTT_connect();
+  int vehicleDetected = digitalRead(irSensorPin);
+  if (vehicleDetected == HIGH) {
+    Serial.println("Vehicle detected! Measuring CO level...");
+    int coValue = analogRead(coSensorPin);
+    float co = map(coValue, 0, 4095, 0, 1000);
+    Serial.print("CO Value: ");
+    Serial.println(co);
+    if (!coFeed.publish(co)) {
+      Serial.println(F("Failed to publish CO value!"));
+    } else {
+      Serial.println(F("CO value sent to Adafruit."));
+    }
+    if (co > coThreshold) {
+      digitalWrite(buzzer, HIGH);
+      Serial.println("Warning: High CO level!");
+    } else {
+      digitalWrite(buzzer, LOW);
+    }
+    delay(3000);
+  }
+}
+
+void MQTT_connect() {
+  int8_t ret;
+  if (mqtt.connected()) {
+    return;
+  }
+  Serial.print("Connecting to MQTT... ");
+  uint8_t retries = 3;
+  while ((ret = mqtt.connect()) != 0) {
+    Serial.println(mqtt.connectErrorString(ret));
+    Serial.println("Retrying MQTT connection in 5 seconds...");
+    mqtt.disconnect();
+    delay(5000);
+    retries--;
+    if (retries == 0) {
+      while (1);
+    }
+  }
+  Serial.println("MQTT Connected!");
+}
+
+
+
+        </pre>
+    </div>
+  
+
+<footer style="font-size: larger ; display:inline-flex; padding-left: 35% ;" class="footer">
+    <p style="color: #fff;">&copy; 2025 clean drive RPDA. All rights reserved.</p>
+  </footer>
+
+
+
+</body>
+</html>
