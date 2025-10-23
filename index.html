@@ -114,90 +114,202 @@
         <h3 style="color:aliceblue;">4.Code</h3>
         <h2 style="color:aliceblue;">Here’s arduino code:</h2>
         <pre style="background-color:#1e1e1e; color:#fff; overflow-x:auto; padding:15px; border-radius:10px;">
+#include &lt;Arduino.h&gt;
 #include &lt;WiFi.h&gt;
-#include &lt;Adafruit_MQTT.h&gt;
-#include &lt;Adafruit_MQTT_Client.h&gt;
-#include &lt;SPI.h&gt;
-#include &lt;SD.h&gt;
-#include &lt;ESP8266WiFi.h&gt;
-#include <WiFi.h>
 #include "Adafruit_MQTT.h"
 #include "Adafruit_MQTT_Client.h"
+#include &lt;WiFiClientSecure.h&gt;
+#include "soc/soc.h"
+#include "soc/rtc_cntl_reg.h"
+#include "esp_camera.h"
+#include &lt;SPI.h&gt;
+#include &lt;SD.h&gt;
+;
 
-#define WIFI_SSID "xxxxxxxx"
-#define WIFI_PASS "xxxxxxxx"
-#define AIO_SERVER "io.adafruit.com"
-#define AIO_SERVERPORT 1883
-#define AIO_USERNAME "xxxxxxxx"
-#define AIO_KEY "xxxxxxxx"
+#include "Adafruit_MQTT.h"
+#include "Adafruit_MQTT_Client.h"
+const char* ssid = "xxx";
+const char* password = "xxx";
 
-int irSensorPin = 2;
-int coSensorPin = 34;
-int buzzer = 4;
-int coThreshold = 50;
+#define AIO_SERVER      "io.adafruit.com"
+#define AIO_SERVERPORT  1883
+#define AIO_USERNAME    "xxxxxxxxx"
+#define AIO_KEY         "xxxxxxxxxxxxxx"
 
-WiFiClient client;
+String serverName = "www.circuitdigest.cloud";
+String serverPath = "/readnumberplate";
+const int serverPort = 443;
+String apiKey = "xxx";
+
+#define flashLight 4
+#define chipSelect 8
+#define irSensorPin 2
+#define coSensorPin 34
+#define noxSensorPin 4
+#define buzzer 14
+
+int coThreshold = 200;
+int noxThreshold = 100;
+
+WiFiClientSecure client;
 Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
 Adafruit_MQTT_Publish coFeed = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/Covalue");
+Adafruit_MQTT_Publish noxFeed = Adafruit_MQTT_Publish(&mqtt, AIO_USERNAME "/feeds/Noxvalue");
+
+#define PWDN_GPIO_NUM 32
+#define RESET_GPIO_NUM -1
+#define XCLK_GPIO_NUM 0
+#define SIOD_GPIO_NUM 26
+#define SIOC_GPIO_NUM 27
+#define Y9_GPIO_NUM 35
+#define Y8_GPIO_NUM 34
+#define Y7_GPIO_NUM 39
+#define Y6_GPIO_NUM 36
+#define Y5_GPIO_NUM 21
+#define Y4_GPIO_NUM 19
+#define Y3_GPIO_NUM 18
+#define Y2_GPIO_NUM 5
+#define VSYNC_GPIO_NUM 25
+#define HREF_GPIO_NUM 23
+#define PCLK_GPIO_NUM 22
+
+String extractJsonStringValue(const String& jsonString, const String& key) {
+  int keyIndex = jsonString.indexOf(key);
+  if (keyIndex == -1) return "";
+  int startIndex = jsonString.indexOf(':', keyIndex) + 2;
+  int endIndex = jsonString.indexOf('"', startIndex);
+  if (startIndex == -1 || endIndex == -1) return "";
+  return jsonString.substring(startIndex, endIndex);
+}
+
+void MQTT_connect() {
+  int8_t ret;
+  if (mqtt.connected()) return;
+  uint8_t retries = 3;
+  while ((ret = mqtt.connect()) != 0) {
+    mqtt.disconnect();
+    delay(5000);
+    retries--;
+    if (retries == 0) while (1);
+  }
+}
+
+int sendPhoto() {
+  camera_fb_t* fb = esp_camera_fb_get();
+  if (!fb) return -1;
+
+  client.setInsecure();
+  if (client.connect(serverName.c_str(), serverPort)) {
+    String filename = apiKey + ".jpeg";
+    String head = "--Boundary\r\nContent-Disposition: form-data; name=\"imageFile\"; filename=\"" + filename + "\"\r\nContent-Type: image/jpeg\r\n\r\n";
+    String tail = "\r\n--Boundary--\r\n";
+    uint32_t imageLen = fb->len;
+    uint32_t extraLen = head.length() + tail.length();
+    uint32_t totalLen = imageLen + extraLen;
+
+    client.println("POST " + serverPath + " HTTP/1.1");
+    client.println("Host: " + serverName);
+    client.println("Content-Length: " + String(totalLen));
+    client.println("Content-Type: multipart/form-data; boundary=Boundary");
+    client.println("Authorization:" + apiKey);
+    client.println();
+    client.print(head);
+
+    uint8_t* fbBuf = fb->buf;
+    size_t fbLen = fb->len;
+    for (size_t n = 0; n < fbLen; n += 1024) {
+      if (n + 1024 < fbLen) {
+        client.write(fbBuf, 1024);
+        fbBuf += 1024;
+      } else {
+        size_t remainder = fbLen % 1024;
+        client.write(fbBuf, remainder);
+      }
+    }
+    client.print(tail);
+    esp_camera_fb_return(fb);
+    client.stop();
+    return 0;
+  } else {
+    esp_camera_fb_return(fb);
+    return -2;
+  }
+}
 
 void setup() {
   Serial.begin(115200);
-  pinMode(irSensorPin, INPUT);
-  pinMode(coSensorPin, INPUT);
+  WRITE_PERI_REG(RTC_CNTL_BROWN_OUT_REG, 0);
+  pinMode(flashLight, OUTPUT);
   pinMode(buzzer, OUTPUT);
-  digitalWrite(buzzer, LOW);
-  Serial.println(F("Connecting to WiFi..."));
-  WiFi.begin(WIFI_SSID, WIFI_PASS);
+  pinMode(irSensorPin, INPUT);
+  SD.begin(chipSelect);
+
+  WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
     Serial.print(".");
   }
   Serial.println("\nWiFi connected!");
+
+  camera_config_t config;
+  config.ledc_channel = LEDC_CHANNEL_0;
+  config.ledc_timer = LEDC_TIMER_0;
+  config.pin_d0 = Y2_GPIO_NUM;
+  config.pin_d1 = Y3_GPIO_NUM;
+  config.pin_d2 = Y4_GPIO_NUM;
+  config.pin_d3 = Y5_GPIO_NUM;
+  config.pin_d4 = Y6_GPIO_NUM;
+  config.pin_d5 = Y7_GPIO_NUM;
+  config.pin_d6 = Y8_GPIO_NUM;
+  config.pin_d7 = Y9_GPIO_NUM;
+  config.pin_xclk = XCLK_GPIO_NUM;
+  config.pin_pclk = PCLK_GPIO_NUM;
+  config.pin_vsync = VSYNC_GPIO_NUM;
+  config.pin_href = HREF_GPIO_NUM;
+  config.pin_sscb_sda = SIOD_GPIO_NUM;
+  config.pin_sscb_scl = SIOC_GPIO_NUM;
+  config.pin_pwdn = PWDN_GPIO_NUM;
+  config.pin_reset = RESET_GPIO_NUM;
+  config.xclk_freq_hz = 20000000;
+  config.pixel_format = PIXFORMAT_JPEG;
+  config.frame_size = FRAMESIZE_SVGA;
+  config.jpeg_quality = 10;
+  config.fb_count = 1;
+  esp_camera_init(&config);
 }
 
 void loop() {
-  MQTT_connect();
   int vehicleDetected = digitalRead(irSensorPin);
-  if (vehicleDetected == HIGH) {
-    Serial.println("Vehicle detected! Measuring CO level...");
+  if (vehicleDetected) {
     int coValue = analogRead(coSensorPin);
-    float co = map(coValue, 0, 4095, 0, 1000);
-    Serial.print("CO Value: ");
-    Serial.println(co);
-    if (!coFeed.publish(co)) {
-      Serial.println(F("Failed to publish CO value!"));
-    } else {
-      Serial.println(F("CO value sent to Adafruit."));
+    int noxValue = analogRead(noxSensorPin);
+    float co = map(coValue, 0.0, 1023.0, 0.0, 1000.0);
+    float nox = map(noxValue, 0.0, 1023.0, 0.0, 1000.0);
+
+    Serial.print("CO: "); Serial.print(co);
+    Serial.print(" | NOx: "); Serial.println(nox);
+
+    File dataFile = SD.open("/AIR_DATA.txt", FILE_WRITE);
+    if (dataFile) {
+      dataFile.print("CO: "); dataFile.print(co);
+      dataFile.print(" NOx: "); dataFile.println(nox);
+      dataFile.close();
     }
-    if (co > coThreshold) {
+
+    if (co > coThreshold || nox > noxThreshold) {
       digitalWrite(buzzer, HIGH);
-      Serial.println("Warning: High CO level!");
+      sendPhoto();
+      MQTT_connect();
+      coFeed.publish(co);
+      noxFeed.publish(nox);
     } else {
       digitalWrite(buzzer, LOW);
     }
-    delay(3000);
   }
+  delay(2000);
 }
 
-void MQTT_connect() {
-  int8_t ret;
-  if (mqtt.connected()) {
-    return;
-  }
-  Serial.print("Connecting to MQTT... ");
-  uint8_t retries = 3;
-  while ((ret = mqtt.connect()) != 0) {
-    Serial.println(mqtt.connectErrorString(ret));
-    Serial.println("Retrying MQTT connection in 5 seconds...");
-    mqtt.disconnect();
-    delay(5000);
-    retries--;
-    if (retries == 0) {
-      while (1);
-    }
-  }
-  Serial.println("MQTT Connected!");
-}
+
 
 
 
