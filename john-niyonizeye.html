@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>John Niyonizeye - Portfolio</title>
+
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+  <!-- Portfolio Stylesheet -->
+  <link rel="stylesheet" href="css/portfolio.css">
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <i class="fas fa-user-circle"></i>
+        <span>Portfolio</span>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="#home" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
+        <li><a href="#about" class="nav-link"><i class="fas fa-user"></i> About</a></li>
+        <li><a href="#skills" class="nav-link"><i class="fas fa-code"></i> Skills</a></li>
+        <li><a href="#projects" class="nav-link"><i class="fas fa-project-diagram"></i> Projects</a></li>
+        <li><a href="#contact" class="nav-link"><i class="fas fa-envelope"></i> Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="hero-image">
+        <!-- Updated image to use rap.png from images folder -->
+        <img src="images/rap.png" alt="John Niyonizeye">
+      </div>
+      <h1 class="hero-title fade-in">Hello, I'm John Niyonizeye</h1>
+      <p class="hero-subtitle fade-in-delay">
+        <!-- Updated role to match project information -->
+        <span class="typing-text">IoT & Embedded Systems Developer</span>
+      </p>
+      <p class="hero-description fade-in-delay-2">
+        <!-- Updated description to reflect IoT expertise -->
+        Embedded Systems Engineer | IoT Solutions Architect | Environmental Tech Innovator
+      </p>
+      <div class="hero-buttons fade-in-delay-3">
+        <a href="#contact" class="btn btn-primary">
+          <i class="fas fa-envelope"></i> Get In Touch
+        </a>
+        <a href="index.html" class="btn btn-secondary">
+          <i class="fas fa-arrow-left"></i> Back to Project
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about-section">
+    <div class="container">
+      <h2 class="section-title">
+        <i class="fas fa-user"></i>
+        About Me
+      </h2>
+      <div class="about-content">
+        <!-- Updated about section with IoT and embedded systems focus -->
+        <p>
+          I am a dedicated IoT and Embedded Systems Developer with a passion for creating innovative solutions that address real-world environmental challenges. My expertise lies in designing and implementing smart monitoring systems that leverage cutting-edge sensor technology, microcontrollers, and cloud integration to deliver actionable insights.
+        </p>
+        <p>
+          As co-creator of the Clean Drive RPDA project, I have demonstrated my ability to develop comprehensive IoT solutions from concept to deployment, including hardware prototyping, firmware development, data logging, and cloud integration. I am committed to using technology to promote environmental sustainability and improve quality of life.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Skills Section -->
+  <section id="skills" class="skills-section">
+    <div class="container">
+      <h2 class="section-title">
+        <i class="fas fa-code"></i>
+        Skills
+      </h2>
+      <div class="skills-grid">
+        <!-- Updated skills to reflect IoT and embedded systems expertise -->
+        <div class="skill-card">
+          <div class="skill-icon">
+            <i class="fas fa-microchip"></i>
+          </div>
+          <h3>ESP32 & Arduino</h3>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <i class="fas fa-code"></i>
+          </div>
+          <h3>C/C++ Programming</h3>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <i class="fas fa-wifi"></i>
+          </div>
+          <h3>IoT Protocols</h3>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <i class="fas fa-sensor"></i>
+          </div>
+          <h3>Sensor Integration</h3>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <i class="fas fa-cloud"></i>
+          </div>
+          <h3>Cloud Integration</h3>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <i class="fas fa-project-diagram"></i>
+          </div>
+          <h3>Circuit Design</h3>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <i class="fab fa-python"></i>
+          </div>
+          <h3>Python</h3>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <i class="fas fa-database"></i>
+          </div>
+          <h3>Data Logging</h3>
+        </div>
+        <div class="skill-card">
+          <div class="skill-icon">
+            <i class="fas fa-camera"></i>
+          </div>
+          <h3>Computer Vision</h3>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="projects-section">
+    <div class="container">
+      <h2 class="section-title">
+        <i class="fas fa-project-diagram"></i>
+        Projects
+      </h2>
+      <div class="projects-grid">
+        <!-- Updated projects to reflect actual work -->
+        <div class="project-card">
+          <div class="project-icon">
+            <i class="fas fa-car-side"></i>
+          </div>
+          <h3>Clean Drive RPDA</h3>
+          <p>Roadside vehicle emission monitoring system using ESP32-CAM, MQ sensors, SD logging, and Adafruit IO cloud integration for real-time air quality tracking</p>
+          <a href="index.html" class="project-link">
+            <i class="fas fa-external-link-alt"></i> View Project
+          </a>
+        </div>
+        <div class="project-card">
+          <div class="project-icon">
+            <i class="fas fa-smog"></i>
+          </div>
+          <h3>Air Quality Monitoring</h3>
+          <p>Multi-sensor environmental monitoring system with real-time data visualization and alert mechanisms for pollution detection</p>
+        </div>
+        <div class="project-card">
+          <div class="project-icon">
+            <i class="fas fa-camera"></i>
+          </div>
+          <h3>Smart Camera Systems</h3>
+          <p>ESP32-CAM based image capture and processing solutions with cloud storage and remote access capabilities</p>
+        </div>
+        <div class="project-card">
+          <div class="project-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <h3>IoT Data Analytics</h3>
+          <p>Cloud-based data collection and visualization platforms for environmental monitoring and predictive analysis</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact-section">
+    <div class="container">
+      <h2 class="section-title">
+        <i class="fas fa-envelope"></i>
+        Contact Me
+      </h2>
+      <div class="contact-content">
+        <form class="contact-form" id="contactForm">
+          <div class="form-group">
+            <label for="name">
+              <i class="fas fa-user"></i> Your Name
+            </label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+          </div>
+          <div class="form-group">
+            <label for="email">
+              <i class="fas fa-envelope"></i> Your Email
+            </label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+          </div>
+          <div class="form-group">
+            <label for="message">
+              <i class="fas fa-comment"></i> Your Message
+            </label>
+            <textarea id="message" name="message" rows="5" placeholder="Enter your message" required></textarea>
+          </div>
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <p class="footer-text">
+          © 2025 John Niyonizeye. All rights reserved.
+        </p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <button class="back-to-top" id="backToTop" aria-label="Back to top">
+    <i class="fas fa-arrow-up"></i>
+  </button>
+
+  <!-- JavaScript -->
+  <script src="js/portfolio.js"></script>
+</body>
+</html>
