@@ -1,374 +1,238 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Clean Drive RPDA — Vehicle Emission Monitoring (IoT)</title>
-  <meta name="description" content="Clean Drive RPDA: roadside vehicle emission monitoring with ESP32-CAM, MQ sensors, SD logging and Adafruit IO integration.">
+  <meta name="description" content="Clean Drive RPDA: roadside vehicle emission monitoring with ESP32-CAM, MQ sensors, SD logging and Adafruit IO integration." />
 
+  <style>
+    
+    :root{
+      --accent:gray;
+      --muted:white;
+      
+      
+      --maxw:980px;
+      font-family:Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
   
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-
+   
+    
+    h1{margin:0;font-size:22px}
+    p.lead{color:white;margin:4px 0 8px}
+    nav.toc{padding:12px;margin:14px 0}
+    nav.toc a{display:inline-block;margin:6px 8px;color:darkblue;text-decoration:none}
   
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    
+    
+    .code{background:#0f1724;color:#e6eef8;padding:12px;border-radius:8px;overflow:auto;font-family:monospace;font-size:13px}
+    .flex-row{display:flex;gap:12px;flex-wrap:wrap}
+    .btn{background:var(--accent);color:#f0ededd8;padding:8px 12px;border-radius:8px;text-decoration:none}
+    
+   .for{color:white;}
+    
+    .meta{font-size:13px;color:white}
+    
+    .kicker{font-size:18px;color:darkslateblue;margin-bottom:8px}
+  </style>
 
- 
-  <link rel="stylesheet" href="css/main.css">
+<div style="height:60%; text-align:center; padding:40px 20px; 
+     background-image:url('urban-highway.jpg'); 
+     background-size:cover; 
+     background-repeat:no-repeat; 
+     background-position:center; 
+     position:relative;">
+  
+    <div style="height:60%; text-align:center; padding:40px 20px; background-image:url('road.png'); background-size:cover; background-repeat:no-repeat; background-position:center; position:relative;">
+        <div style="position:absolute; top:0; left:0; width:100%; height:100%; background-color:rgba(0,0,0,0.5);"></div>
+        <div style="position:relative; z-index:1;">
+            <h1 style="color:aliceblue; line-height:1.4;">VEHICLE EMISSION MONITORING INTEGRATED WITH IOT <br>(Clean drive RPDA)</h1>
+           <p class="lead">Real-time roadside emission detection using ESP32-CAM, MQ sensors, SD logging and cloud publishing (Adafruit IO).</p>
+       
+        </div>
+    </div>
+        
+<div>
+
+    <nav class="toc card" aria-label="Table of contents" >
+      <strong>Contents</strong>
+      <div style="margin-top:8px">
+        <a href="#abstract">Abstract</a> •
+        <a href="#implementation">Implementation</a> •
+        <a href="#components">Components</a> •
+        <a href="#Diagram">System Diagram</a> •
+        <a href="#code">Code</a> •
+        <a href="#future">Future Work</a>
+         <div style="padding-left: 80%;">
+          <h3>Quick links</h3>
+          <div class="flex-row" style="margin-top:8px">
+            <a class="btn" href="#code">Firmware</a>
+            <a class="btn" href="#Diagram">Diagram</a>
+          </div>
+      </div>
+      </nav>
+      <div><h1  style="color:aliceblue; text-align:center; "><u>Project owners</u></h1></div>
+      <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(50px,1fr)); gap:10px; padding:10px; max-width:900px; margin:20px auto;padding: left 10px;">
+      
+      <div style="background-color:#272525; border-radius:5px; padding:10px; text-align:center; padding-left: 1%;">
+              
+          <h1 style="color:white;">Emmelyne .I.Gihozo</h1>
+            <img src="emmy.jpg" alt="" style="width:200px; border: radius 10px; margin-top:10px;">
+             <h1> <a href="Emily portfolio.html" style="display:inline-block; padding:10px 20px; background-color:gray; color:#fff; border-radius:10px; text-decoration:none; margin-top:10px;">more about</a><h1>
+        </div>
+        <div style="background-color:#2e2a2a; border-radius:10px; padding:10px; text-align:center;">
+            <h1 style="color:white;" >John Niyonizeye</h1>
+            <img src="rap.png" alt="" style="width:200px; border-radius:10%; margin-top:10px;">
+             <h1> <a href="rape portif.html" style="display:inline-block; padding:10px 20px; background-color:gray; color:#fff; border-radius:10px; text-decoration:none; margin-top:10px;">more about </a></h1>
+        </div>
+      </div>
+
+          
+        </div>
+        
+</div>
 </head>
-<body>
+    <body style="margin-left:20; font-family:Arial, sans-serif; background-color:rgb(202, 175, 175); color:black; ">
+      
 
-  <nav class="navbar" id="navbar">
-    <div class="nav-container">
-      <div class="nav-logo">
-        <i class="fas fa-car-side"></i>
-        <span>Clean Drive RPDA</span>
-      </div>
-      <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-      <ul class="nav-menu" id="navMenu">
-        <li><a href="#home" class="nav-link"><i class="fas fa-home"></i> Home</a></li>
-        <li><a href="#abstract" class="nav-link"><i class="fas fa-info-circle"></i> Abstract</a></li>
-        <li><a href="#implementation" class="nav-link"><i class="fas fa-cogs"></i> Implementation</a></li>
-        <li><a href="#components" class="nav-link"><i class="fas fa-microchip"></i> Components</a></li>
-        <li><a href="#diagram" class="nav-link"><i class="fas fa-project-diagram"></i> Diagram</a></li>
-        <li><a href="#code" class="nav-link"><i class="fas fa-code"></i> Code</a></li>
-        <li><a href="#future" class="nav-link"><i class="fas fa-rocket"></i> Future</a></li>
-      </ul>
+              <div style="height: 30%; text-align: justify; padding:10px;" >
+                
+<h1 >Project Introduction</h1>
+<p style="color:white ;">The Vehicle Emission Monitoring System using IoT (Clean Drive RPDA) is an innovative project designed to detect and monitor harmful vehicle emissions in real time. <br> As environmental pollution from vehicles continues to rise, this system provides a smart and automated approach to identify vehicles emitting gases beyond the acceptable threshold. <br> By integrating IoT technology, infrared sensors, and an ESP32-CAM module, the system captures both emission data and vehicle plate images for accurate monitoring. <br> Data is transmitted to an online IoT platform for visualization and analysis, enabling authorities to track pollution sources and take necessary actions. <br>This project demonstrates how technology can be leveraged to support cleaner roads and promote environmental sustainability.</p>
+
+
+
+      <div>
+       
+        <section id="abstract" >
+          <div class="kicker">Abstract</div>
+          <h2>Project overview</h2>
+          <p class="for">
+            <strong >Clean Drive RPDA</strong> is a roadside emission monitoring prototype that detects and logs pollutants (CO, NOx, CO₂ and general air quality indicators) from passing vehicles.
+            <br>The device uses an ESP32-CAM for image capture (license plate evidence) and MQ-series gas sensors for air-quality readings. <br>
+            Data is logged locally to an SD card and published to Adafruit IO for remote monitoring and analysis.
+          </p>
+          <p><strong>Primary goals:</strong> 
+            <ul class="for">
+           <li>Identify high-emission vehicles in real time.<br>
+            <li>Create an auditable dataset for local authorities and researchers .</li>
+            <li>Demonstrate a low-cost IoT monitoring node.</li>
+            </ul>
+          </p>
+        </section>
+
+        <div style="padding: 10px;">
+        <section id="implementation" >
+          <div class="kicker">Implementation summary</div>
+          <h2>Working principle</h2>
+          <p class="for">
+            When the IR sensor detects a passing vehicle, the ESP32-CAM wakes the gas sensors,<br> reads the concentrations, and converts sensor raw readings to human-friendly units.
+            If pollutant values exceed thresholds, an alarm (buzzer) is triggered,<br> a photo is captured and saved to the SD card, and the readings (with timestamp and device id) are published to Adafruit IO. <br> 
+            The photo upload to a remote endpoint is attempted for license-plate recognition if available.
+          </p>
+
+          <h3 style="margin-top:12px" >Implementation stages</h3>
+          <p>
+            <ul class="for">
+           <li> Hardware prototyping & sensor selection <br></li>
+           <img src="" alt="">
+           <li> Arduino / ESP32 firmware development <br></li>
+           <img src="loop.png" alt=" IDE images" style="width:25cm;" >
+           <li> Local SD logging, image capture <br></li>
+           <img src="" alt="implementation image">
+           <li> Cloud integration  <br></li>
+           <img src="dash.png" alt=" adafruitphoto" style="width:25cm;">
+           <li> Field testing and calibration</li>
+           <img src="" alt="cncb">
+            </ul>
+          </p>
+        </section>
+        </div>
+        <div style="margin-top:12px">
+            <h4 style="margin:0">Project images</h4>
+            <p class="meta" style="margin:6px 0 12px"></p>
+           
+            <img class="image" src="dash.png" alt="Hardware setup " style="width:10cm;" />
+            <img class="image" src="empty-highway-cityscape-chongqingchina-260nw-758655235.webp" alt="Deployment photo " style=" width:10cm;"/>
+          </div>
+          <section id="components">
+    <div style="border-radius:20px; background-color:#61666b; padding:20px; margin:20px auto; max-width:1000px;">
+        <h3 style="color:aliceblue;"> Components:</h3>
+        <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(250px,1fr)); gap:20px; padding:20px;">
+            <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1>INFRARED SENSOR</h1>
+                <p>An infrared (IR) sensor is an optoelectronic device that detects and measures infrared radiation, a form of electromagnetic energy with wavelengths longer than visible light</p>
+                <img src="INFRARED.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+            <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1>MQ-7</h1>
+                <p>The MQ-7 is a semiconductor gas sensor module designed to detect carbon monoxide (CO) in the air, measuring concentrations between 20 and 2000 ppm with high sensitivity and a fast response time.</p>
+                <img src="MQ7.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+            <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1>ESP32 CAM</h1>
+                <p>The ESP32-CAM is a compact, low-cost development board featuring an ESP32-S System-on-Chip and an integrated 2-megapixel OV2640 camera sensor, enabling wireless image and video streaming via Wi-Fi.</p>
+                <img src="ESP32 CAM.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+            <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1>BUZZER</h1>
+                <p>A buzzer is an audio signaling device that creates a buzzing or beeping sound when an electrical current is applied.</p>
+                <img src="BUZZER.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+            <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1>MQ135 SENSOR</h1>
+                <p>The MQ-135 is a gas sensor module used for air quality monitoring, capable of detecting a wide range of harmful gases including ammonia (NH3), nitrogen oxides (NOx), alcohol, benzene, smoke, and carbon dioxide (CO2)</p>
+                <img src="MQ135.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+                <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1> 5VDC POWER SUPPLY</h1>
+                <p>A 5V power supply is an electrical device that converts a higher AC voltage (like from a wall outlet) into a stable, regulated 5V DC output. </p>
+                <img src="5V power supply.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+                  <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1> SD CARD</h1>
+                <p>An SD card is a compact, removable flash memory card used for storing and transferring digital data. </p>
+                <img src="SD CARD.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+                  <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1> SOLDERING IRON</h1>
+                <p>A soldering iron is a hand-held tool with a heated metal tip used to melt solder, creating a permanent bond between metal workpieces. </p>
+                <img src="solder.png" alt="" style="width:80%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+   <div style="background-color:#b6b5b5; border-radius:20px; padding:20px; text-align:center; color:#000;">
+                <h1> CONNECTING WIRE</h1>
+                <p>
+                  Connecting wires are used to create electrical connections between two points, often involving joining wires together using methods like wire nuts, screw terminals, or crimping </p>
+                <img src="WIRE.png" alt="" style="width:100%; max-width:200px; border-radius:10px; margin-top:10px;">
+            </div>
+             </div>
+        </div>
     </div>
-  </nav>
-
+    </section>
+<section id="Diagram">
+   <div id="Diagram"style="border-radius:20px; background-color:#f1f4f8; padding-left:15%; margin:20px auto; max-width:1000px;">
   
-  <section class="hero" id="home">
-    <div class="hero-overlay"></div>
-    <div class="hero-content">
-      <h1 class="hero-title fade-in">
-        <i class="fas fa-leaf"></i>
-        Vehicle Emission Monitoring Integrated with IoT
-      </h1>
-      <p class="hero-subtitle fade-in-delay">Clean Drive RPDA</p>
-      <p class="hero-description fade-in-delay-2">
-        Real-time roadside emission detection using ESP32-CAM, MQ sensors, SD logging and cloud publishing (Adafruit IO)
-      </p>
-      <div class="hero-buttons fade-in-delay-3">
-        <a href="#abstract" class="btn btn-primary">
-          <i class="fas fa-play-circle"></i> Get Started
-        </a>
-        <a href="#code" class="btn btn-secondary">
-          <i class="fas fa-code"></i> View Code
-        </a>
-      </div>
-    </div>
-    <div class="scroll-indicator">
-      <i class="fas fa-chevron-down"></i>
-    </div>
-  </section>
-
-
-  <section class="owners-section">
-    <div class="container">
-      <h2 class="section-title">
-        <i class="fas fa-users"></i>
-        Project Owners
-      </h2>
-      <div class="owners-grid">
-        <div class="owner-card">
-          <div class="owner-image">
-            <img src="images/emmy.jpg" alt="Emmelyne I. Gihozo">
-          </div>
-          <h3 class="owner-name">Emmelyne I. Gihozo</h3>
-          <p class="owner-role">IoT & Embedded Systems Developer</p>
-          <a href="portfolio.html" class="btn btn-outline">
-            <i class="fas fa-user"></i> View Portfolio
-          </a>
-        </div>
-        <div class="owner-card">
-          <div class="owner-image">
-            <img src="images/rap.png" alt="John Niyonizeye">
-          </div>
-          <h3 class="owner-name">John Niyonizeye</h3>
-          <p class="owner-role">IoT & Embedded Systems Developer</p>
-          <a href="john-niyonizeye.html" class="btn btn-outline">
-            <i class="fas fa-user"></i> View Portfolio
-          </a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="intro-section">
-    <div class="container">
-      <h2 class="section-title">
-        <i class="fas fa-lightbulb"></i>
-        Project Introduction
-      </h2>
-      <div class="intro-content">
-        <p>
-          The Vehicle Emission Monitoring System using IoT (Clean Drive RPDA) is an innovative project designed to detect and monitor harmful vehicle emissions in real time. As environmental pollution from vehicles continues to rise, this system provides a smart and automated approach to identify vehicles emitting gases beyond the acceptable threshold.
-        </p>
-        <p>
-          By integrating IoT technology, infrared sensors, and an ESP32-CAM module, the system captures both emission data and vehicle plate images for accurate monitoring. Data is transmitted to an online IoT platform for visualization and analysis, enabling authorities to track pollution sources and take necessary actions.
-        </p>
-        <p>
-          This project demonstrates how technology can be leveraged to support cleaner roads and promote environmental sustainability.
-        </p>
-      </div>
-    </div>
-  </section>
-
-  <!-- Abstract Section -->
-  <section id="abstract" class="content-section">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-kicker">Abstract</span>
-        <h2 class="section-title">
-          <i class="fas fa-file-alt"></i>
-          Project Overview
-        </h2>
-      </div>
-      <div class="content-box">
-        <p>
-          <strong>Clean Drive RPDA</strong> is a roadside emission monitoring prototype that detects and logs pollutants (CO, NOx, CO₂ and general air quality indicators) from passing vehicles. The device uses an ESP32-CAM for image capture (license plate evidence) and MQ-series gas sensors for air-quality readings. Data is logged locally to an SD card and published to Adafruit IO for remote monitoring and analysis.
-        </p>
-        <div class="goals-box">
-          <h3><i class="fas fa-bullseye"></i> Primary Goals</h3>
-          <ul class="goals-list">
-            <li><i class="fas fa-check-circle"></i> Identify high-emission vehicles in real time</li>
-            <li><i class="fas fa-check-circle"></i> Create an auditable dataset for local authorities and researchers</li>
-            <li><i class="fas fa-check-circle"></i> Demonstrate a low-cost IoT monitoring node</li>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Implementation Section -->
-  <section id="implementation" class="content-section alt-bg">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-kicker">Implementation Summary</span>
-        <h2 class="section-title">
-          <i class="fas fa-tools"></i>
-          Working Principle
-        </h2>
-      </div>
-      <div class="content-box">
-        <p>
-          When the IR sensor detects a passing vehicle, the ESP32-CAM wakes the gas sensors, reads the concentrations, and converts sensor raw readings to human-friendly units. If pollutant values exceed thresholds, an alarm (buzzer) is triggered, a photo is captured and saved to the SD card, and the readings (with timestamp and device id) are published to Adafruit IO. The photo upload to a remote endpoint is attempted for license-plate recognition if available.
-        </p>
-
-        <h3 class="subsection-title">
-          <i class="fas fa-list-ol"></i>
-          Implementation Stages
-        </h3>
-        <div class="stages-grid">
-          <div class="stage-card">
-            <div class="stage-icon">
-              <i class="fas fa-microchip"></i>
+              
+        <h3 class="kicker">Electronic design and diagrams:</h3>
+        <h2>ELECTRONIC DESIGNS IMAGES:</h2>
+        <p style="color:darkblue">Here’s a screenshot of circuit diagram and flow chart </p>
+        <img src="PROTEUS SIMULATION.png" alt="" style="max-width:40%; border-radius:10px;">
+    <img src="FLOW CHART.png"  alt="" style="max-width:30%; border-radius:10px;">
             </div>
-            <h4>Hardware Prototyping</h4>
-            <p>Hardware prototyping & sensor selection</p>
-          </div>
-          <div class="stage-card">
-            <div class="stage-icon">
-              <i class="fas fa-code"></i>
-            </div>
-            <h4>Firmware Development</h4>
-            <p>Arduino / ESP32 firmware development</p>
-            <div class="stage-image">
-              <img src="images/loop.png" alt="Arduino IDE">
-            </div>
-          </div>
-          <div class="stage-card">
-            <div class="stage-icon">
-              <i class="fas fa-sd-card"></i>
-            </div>
-            <h4>Data Logging</h4>
-            <p>Local SD logging, image capture</p>
-          </div>
-          <div class="stage-card">
-            <div class="stage-icon">
-              <i class="fas fa-cloud"></i>
-            </div>
-            <h4>Cloud Integration</h4>
-            <p>Adafruit IO cloud integration</p>
-            <div class="stage-image">
-              <img src="images/dash.png" alt="Adafruit Dashboard">
-            </div>
-          </div>
-          <div class="stage-card">
-            <div class="stage-icon">
-              <i class="fas fa-vial"></i>
-            </div>
-            <h4>Testing & Calibration</h4>
-            <p>Field testing and calibration</p>
-          </div>
-        </div>
       </div>
-    </div>
-  </section>
+</section>
+      
 
-  
-  <section id="components" class="content-section">
-    <div class="container">
-      <h2 class="section-title">
-        <i class="fas fa-puzzle-piece"></i>
-        Components
-      </h2>
-      <div class="components-grid">
-        <div class="component-card">
-          <div class="component-icon">
-            <i class="fas fa-wifi"></i>
-          </div>
-          <div class="component-image">
-            <img src="images/INFRARED.png" alt="Infrared Sensor">
-          </div>
-          <h3>Infrared Sensor</h3>
-          <p>An infrared (IR) sensor is an optoelectronic device that detects and measures infrared radiation, a form of electromagnetic energy with wavelengths longer than visible light.</p>
-        </div>
+       <section id="code">
+        <div style="padding-left: 15%;padding-right: 15%;"  class="for">
+          <div class="kicker">Firmware </div>
+          <h2>Core firmware</h2>
+          <p>Below is the cleaned sketch used for the ESP32-CAM node. Update the placeholders before uploading.</p>
 
-        <div class="component-card">
-          <div class="component-icon">
-            <i class="fas fa-smog"></i>
-          </div>
-          <div class="component-image">
-            <img src="images/MQ7.png" alt="MQ-7 Sensor">
-          </div>
-          <h3>MQ-7 Sensor</h3>
-          <p>The MQ-7 is a semiconductor gas sensor module designed to detect carbon monoxide (CO) in the air, measuring concentrations between 20 and 2000 ppm with high sensitivity and a fast response time.</p>
-        </div>
-
-        <div class="component-card">
-          <div class="component-icon">
-            <i class="fas fa-camera"></i>
-          </div>
-          <div class="component-image">
-            <img src="images/ESP32 CAM.png" alt="ESP32 CAM">
-          </div>
-          <h3>ESP32 CAM</h3>
-          <p>The ESP32-CAM is a compact, low-cost development board featuring an ESP32-S System-on-Chip and an integrated 2-megapixel OV2640 camera sensor, enabling wireless image and video streaming via Wi-Fi.</p>
-        </div>
-
-        <div class="component-card">
-          <div class="component-icon">
-            <i class="fas fa-bell"></i>
-          </div>
-          <div class="component-image">
-            <img src="images/BUZZER.png" alt="Buzzer">
-          </div>
-          <h3>Buzzer</h3>
-          <p>A buzzer is an audio signaling device that creates a buzzing or beeping sound when an electrical current is applied.</p>
-        </div>
-
-        <div class="component-card">
-          <div class="component-icon">
-            <i class="fas fa-wind"></i>
-          </div>
-          <div class="component-image">
-            <img src="images/MQ135.png" alt="MQ135 Sensor">
-          </div>
-          <h3>MQ135 Sensor</h3>
-          <p>The MQ-135 is a gas sensor module used for air quality monitoring, capable of detecting a wide range of harmful gases including ammonia (NH3), nitrogen oxides (NOx), alcohol, benzene, smoke, and carbon dioxide (CO2).</p>
-        </div>
-
-        <div class="component-card">
-          <div class="component-icon">
-            <i class="fas fa-plug"></i>
-          </div>
-          <div class="component-image">
-            <img src="images/5V power supply.png" alt="5V Power Supply">
-          </div>
-          <h3>5VDC Power Supply</h3>
-          <p>A 5V power supply is an electrical device that converts a higher AC voltage (like from a wall outlet) into a stable, regulated 5V DC output.</p>
-        </div>
-
-        <div class="component-card">
-          <div class="component-icon">
-            <i class="fas fa-sd-card"></i>
-          </div>
-          <div class="component-image">
-            <img src="images/SD CARD.png" alt="SD Card">
-          </div>
-          <h3>SD Card</h3>
-          <p>An SD card is a compact, removable flash memory card used for storing and transferring digital data.</p>
-        </div>
-
-        <div class="component-card">
-          <div class="component-icon">
-            <i class="fas fa-fire"></i>
-          </div>
-          <div class="component-image">
-            <img src="images/solder.png" alt="Soldering Iron">
-          </div>
-          <h3>Soldering Iron</h3>
-          <p>A soldering iron is a hand-held tool with a heated metal tip used to melt solder, creating a permanent bond between metal workpieces.</p>
-        </div>
-
-        <div class="component-card">
-          <div class="component-icon">
-            <i class="fas fa-plug"></i>
-          </div>
-          <div class="component-image">
-            <img src="images/WIRE.png" alt="Connecting Wire">
-          </div>
-          <h3>Connecting Wire</h3>
-          <p>Connecting wires are used to create electrical connections between two points, often involving joining wires together using methods like wire nuts, screw terminals, or crimping.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
- 
-  <section id="diagram" class="content-section alt-bg">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-kicker">Electronic Design and Diagrams</span>
-        <h2 class="section-title">
-          <i class="fas fa-sitemap"></i>
-          System Diagrams
-        </h2>
-      </div>
-      <div class="diagram-grid">
-        <div class="diagram-card">
-          <h3><i class="fas fa-project-diagram"></i> Circuit Diagram</h3>
-          <div class="diagram-image">
-            <img src="images/PROTEUS SIMULATION.png" alt="Proteus Simulation">
-          </div>
-        </div>
-        <div class="diagram-card">
-          <h3><i class="fas fa-stream"></i> Flow Chart</h3>
-          <div class="diagram-image">
-            <img src="images/FLOW CHART.png" alt="Flow Chart">
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
- 
-  <section id="code" class="content-section">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-kicker">Firmware</span>
-        <h2 class="section-title">
-          <i class="fas fa-file-code"></i>
-          Core Firmware
-        </h2>
-      </div>
-      <div class="content-box">
-        <p>Below is the cleaned sketch used for the ESP32-CAM node. Update the placeholders before uploading.</p>
-        <div class="code-container">
-          <div class="code-header">
-            <span><i class="fas fa-code"></i> clean_drive_rpda.ino</span>
-            <button class="copy-btn" onclick="copyCode()">
-              <i class="fas fa-copy"></i> Copy
-            </button>
-          </div>
-          <pre class="code-block"><code>// clean_drive_rpda.ino
+          <div class="code" style="white-space:pre-wrap;font-size:12px;">
+// clean_drive_rpda.ino
 // Replace SSID, PASSWORD, AIO_USERNAME, AIO_KEY, and apiKey with your credentials.
 
 #include &lt;WiFi.h&gt;
@@ -387,7 +251,7 @@ const char* password = "YOUR_WIFI_PASSWORD";
 #define AIO_USERNAME    "YOUR_ADAFRUIT_USERNAME"
 #define AIO_KEY         "YOUR_ADAFRUIT_KEY"
 
-String serverName = "www.circuitdigest.cloud";
+String serverName = "www.circuitdigest.cloud"; // or your upload endpoint
 String serverPath = "/readnumberplate";
 const int serverPort = 443;
 String apiKey = "YOUR_API_KEY";
@@ -399,15 +263,14 @@ String apiKey = "YOUR_API_KEY";
 #define NOX_SENSOR_PIN 35
 #define BUZZER_PIN 14
 
-int coThreshold = 200;
-int noxThreshold = 100;
+int coThreshold = 200;   // tune after calibration
+int noxThreshold = 100;  // tune after calibration
 
 WiFiClientSecure client;
 Adafruit_MQTT_Client mqtt(&client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
 Adafruit_MQTT_Publish coFeed = Adafruit_MQTT_Publish(&mqtt, String(AIO_USERNAME)+"/feeds/Covalue");
 Adafruit_MQTT_Publish noxFeed = Adafruit_MQTT_Publish(&mqtt, String(AIO_USERNAME)+"/feeds/Noxvalue");
 
-// Camera pin definitions
 #define PWDN_GPIO_NUM 32
 #define RESET_GPIO_NUM -1
 #define XCLK_GPIO_NUM 0
@@ -514,8 +377,9 @@ void setup() {
 void loop() {
   int vehicleDetected = digitalRead(IR_SENSOR_PIN);
   if (vehicleDetected) {
-    int coValue = analogRead(CO_SENSOR_PIN);
+    int coValue = analogRead(CO_SENSOR_PIN);    // raw ADC
     int noxValue = analogRead(NOX_SENSOR_PIN);
+    // map ADC to 0-1000 range (adjust to your sensors' ranges after calibration)
     float co = map(coValue, 0, 4095, 0, 1000);
     float nox = map(noxValue, 0, 4095, 0, 1000);
 
@@ -543,80 +407,34 @@ void loop() {
   }
 
   delay(1500);
-}</code></pre>
-        </div>
-        <div class="code-note">
-          <i class="fas fa-info-circle"></i>
-          <strong>Note:</strong> Tune <code>coThreshold</code> and <code>noxThreshold</code> after calibration. ESP32 ADC returns 0–4095 by default; adjust mapping/calibration for your sensor and board.
-        </div>
-      </div>
-    </div>
-  </section>
+}
+          </div>
 
-  <section id="future" class="content-section alt-bg">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-kicker">Future Improvements</span>
-        <h2 class="section-title">
-          <i class="fas fa-lightbulb"></i>
-          Future Work
-        </h2>
+          <p class="meta" style="margin-top:10px">Notes: tune <code>coThreshold</code> and <code>noxThreshold</code> after calibration. ESP32 ADC returns 0–4095 by default; adjust mapping/calibration for your sensor and board.</p>
+        </div>
+</section> 
+        <div style="padding: 5%;">
+        <section style="padding-left: 15%;" id="future" class="card">
+          <div class="kicker">Future improvements</div>
+          <ul class="for">
+            <li>Replace MQ sensors with calibrated electrochemical sensors for better accuracy.</li>
+            <li>Add GPS for geotagging each reading.</li>
+          
+            <li>Power the node with a small solar + battery system for autonomous roadside deployment.</li>
+            <li>Introduce data privacy and retention policy if storing images of vehicles.</li>
+          </ul>
+        </section>
       </div>
-      <div class="future-grid">
-        <div class="future-card">
-          <div class="future-icon">
-            <i class="fas fa-microscope"></i>
-          </div>
-          <p>Replace MQ sensors with calibrated electrochemical sensors for better accuracy</p>
-        </div>
-        <div class="future-card">
-          <div class="future-icon">
-            <i class="fas fa-map-marker-alt"></i>
-          </div>
-          <p>Add GPS for geotagging each reading</p>
-        </div>
-        <div class="future-card">
-          <div class="future-icon">
-            <i class="fas fa-solar-panel"></i>
-          </div>
-          <p>Power the node with a small solar + battery system for autonomous roadside deployment</p>
-        </div>
-        <div class="future-card">
-          <div class="future-icon">
-            <i class="fas fa-shield-alt"></i>
-          </div>
-          <p>Introduce data privacy and retention policy if storing images of vehicles</p>
-        </div>
-      </div>
-    </div>
-  </section>
+</div>
+      
+</body>
 
-  
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <div class="footer-logo">
-          <i class="fas fa-car-side"></i>
-          <span>Clean Drive RPDA</span>
-        </div>
-        <p class="footer-text">
-          © 2025 Clean Drive RPDA — Emmelyne I. Gihozo & John Niyonizeye
-        </p>
-        <div class="footer-links">
-          <a href="https://github.com/Emilycabelano/drive" target="_blank" rel="noopener">
-            <i class="fab fa-github"></i> GitHub
-          </a>
-        </div>
-      </div>
-    </div>
+    
+<footer style="font-size: smaller ; display:inline-flex; padding-left: 35% ;" class="footer">
+    <p style="color: #fff;"> © 2025 Clean Drive RPDA — Emmelyne I. Gihozo &amp; John Niyonizeye. For collaboration:https://github.com/Emilycabelano/drive" .
+    </p>
   </footer>
-
-  
-  <button class="back-to-top" id="backToTop" aria-label="Back to top">
-    <i class="fas fa-arrow-up"></i>
-  </button>
-
- 
-  <script src="js/main.js"></script>
+      
+  </div>
 </body>
 </html>
